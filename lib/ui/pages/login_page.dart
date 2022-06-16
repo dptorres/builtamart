@@ -1,4 +1,5 @@
 
+import 'package:builtamart_flutter_exam/constants/constants_routes.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/buttons/builtamart_button.dart';
@@ -11,13 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   void showErrorDialog() {
     showDialog(
@@ -36,10 +32,10 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void handleLoginPress() {
-    if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
+    if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
       showErrorDialog();
     } else {
-      // navigator push to gallery screen
+      Navigator.pushNamed(context, galleryRoute);
     }
   }
 
@@ -62,7 +58,7 @@ class LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextField(
-                    controller: usernameController,
+                    controller: _usernameController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Username',
@@ -75,7 +71,7 @@ class LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextField(
-                    controller: passwordController,
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),

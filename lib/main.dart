@@ -1,10 +1,14 @@
+import 'package:builtamart_flutter_exam/ui/gallery_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'constants/constants_routes.dart';
-import 'ui/pages/login_page.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider<GalleryProvider>(
+    child: const MyApp(),
+    create: (_) => GalleryProvider(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: const LoginPage(),
+      initialRoute: loginRoute,
       routes: RouteMap,
     );
   }
