@@ -1,4 +1,4 @@
-import 'package:builtamart_flutter_exam/ui/gallery_provider.dart';
+import 'package:builtamart_flutter_exam/provider/gallery_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'constants/constants_routes.dart';
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      initialRoute: galleryRoute,
+      initialRoute: loginRoute,
       routes: RouteMap,
     );
   }

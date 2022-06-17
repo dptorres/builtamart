@@ -66,4 +66,8 @@ class GalleryProvider with ChangeNotifier {
   bool isImageInCarousel(String image) {
     return _carouselImages.contains(image);
   }
+
+  bool isInTabA(String image) {
+    return _tabAImages.contains(image);
+  }
 }

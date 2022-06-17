@@ -1,5 +1,5 @@
-
-import 'package:builtamart_flutter_exam/ui/gallery_provider.dart';
+import 'package:builtamart_flutter_exam/provider/gallery_provider.dart';
+import 'package:builtamart_flutter_exam/ui/pages/photo_page.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -14,6 +14,15 @@ class TabPage extends StatefulWidget {
 
   @override
   TabPageState createState() => TabPageState();
+}
+
+void openSinglePhotoPage(BuildContext context, String image) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PhotoPage(image: image),
+    )
+  );
 }
 
 class TabPageState extends State<TabPage> {
@@ -33,7 +42,7 @@ class TabPageState extends State<TabPage> {
       itemBuilder: (context, index) {
         bool? isInCarousel = context.read<GalleryProvider>().isImageInCarousel(tabImages[index]);
         return FocusedMenuHolder(
-          onPressed: () => print('open single photo page'),
+          onPressed: () => openSinglePhotoPage(context, tabImages[index]),
           menuWidth: MediaQuery.of(context).size.width * 0.70,
           blurSize: 2.0,
           duration: const Duration(milliseconds: 150),
@@ -92,25 +101,4 @@ class TabPageState extends State<TabPage> {
       }
     );
   }
-
 }
-
-// ToggleSwitch(
-// initialLabelIndex: widget.tabName == 'a' ? 0 : 1,
-// totalSwitches: 2,
-// labels: const ['Tab A', 'Tab B'],
-// cornerRadius: 20.0,
-// activeFgColor: Colors.white,
-// inactiveBgColor: Colors.grey,
-// inactiveFgColor: Colors.white,
-// onToggle: (selectedIndex) {
-// if (widget.tabName == 'a') {
-// context.read<GalleryProvider>().addToTabB(tabImages[index]);
-// context.read<GalleryProvider>().removeFromTabA(tabImages[index]);
-// } else {
-// context.read<GalleryProvider>().addToTabA(tabImages[index]);
-// context.read<GalleryProvider>().removeFromTabB(tabImages[index]);
-// }
-// },
-// activeBgColors: const [[BuiltaMartColors.red], [BuiltaMartColors.green]],
-// )

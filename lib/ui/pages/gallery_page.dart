@@ -1,5 +1,5 @@
 
-import 'package:builtamart_flutter_exam/ui/gallery_provider.dart';
+import 'package:builtamart_flutter_exam/provider/gallery_provider.dart';
 import 'package:builtamart_flutter_exam/ui/pages/tab_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
