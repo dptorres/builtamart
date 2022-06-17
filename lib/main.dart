@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      initialRoute: loginRoute,
+      initialRoute: galleryRoute,
       routes: RouteMap,
     );
   }
