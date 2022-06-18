@@ -51,10 +51,8 @@ class PhotoPageState extends State<PhotoPage> {
             onToggle: (selectedIndex) {
               if (selectedIndex == 0) {
                 context.read<GalleryProvider>().addToTabA(widget.image);
-                context.read<GalleryProvider>().removeFromTabB(widget.image);
               } else {
                 context.read<GalleryProvider>().addToTabB(widget.image);
-                context.read<GalleryProvider>().removeFromTabA(widget.image);
               }
             },
           ),

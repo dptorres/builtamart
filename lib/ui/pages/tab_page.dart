@@ -40,9 +40,9 @@ class TabPageState extends State<TabPage> {
       ),
       itemCount: tabImages.length,
       itemBuilder: (context, index) {
-        bool? isInCarousel = context.read<GalleryProvider>().isImageInCarousel(tabImages[index]);
+        bool? isInCarousel = context.read<GalleryProvider>().isImageInCarousel(tabImages[index]!);
         return FocusedMenuHolder(
-          onPressed: () => openSinglePhotoPage(context, tabImages[index]),
+          onPressed: () => openSinglePhotoPage(context, tabImages[index]!),
           menuWidth: MediaQuery.of(context).size.width * 0.70,
           blurSize: 2.0,
           duration: const Duration(milliseconds: 150),
@@ -55,11 +55,9 @@ class TabPageState extends State<TabPage> {
                 initialIndex: widget.tabName == 'a' ? 0 : 1,
                 onToggle: (selectedIndex) {
                   if (selectedIndex == 0) {
-                    context.read<GalleryProvider>().addToTabA(tabImages[index]);
-                    context.read<GalleryProvider>().removeFromTabB(tabImages[index]);
+                    context.read<GalleryProvider>().addToTabA(tabImages[index]!);
                   } else {
-                    context.read<GalleryProvider>().addToTabB(tabImages[index]);
-                    context.read<GalleryProvider>().removeFromTabA(tabImages[index]);
+                    context.read<GalleryProvider>().addToTabB(tabImages[index]!);
                   }
                   Navigator.pop(context);
                 },
@@ -77,9 +75,9 @@ class TabPageState extends State<TabPage> {
                         isInCarousel = value;
                       });
                       if (value!) {
-                        context.read<GalleryProvider>().addToCarousel(tabImages[index]);
+                        context.read<GalleryProvider>().addToCarousel(tabImages[index]!);
                       } else {
-                        context.read<GalleryProvider>().removeFromCarousel(tabImages[index]);
+                        context.read<GalleryProvider>().removeFromCarousel(tabImages[index]!);
                       }
                       Navigator.pop(context);
                     },
@@ -93,7 +91,7 @@ class TabPageState extends State<TabPage> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: NetworkImage(tabImages[index]),
+                image: NetworkImage(tabImages[index]!),
               ),
             ),
           )

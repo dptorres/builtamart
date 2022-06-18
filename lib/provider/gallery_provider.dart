@@ -1,66 +1,117 @@
+import 'package:builtamart_flutter_exam/constants/constants_images.dart';
+import 'package:builtamart_flutter_exam/models/user_state.dart';
 import 'package:flutter/material.dart';
 
-final List<String> initialCarouselImages = [
-  'https://images.pexels.com/photos/2425251/pexels-photo-2425251.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/5946969/pexels-photo-5946969.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-  'https://images.pexels.com/photos/2187661/pexels-photo-2187661.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/707680/pexels-photo-707680.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/634009/pexels-photo-634009.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-];
-
-final List<String> initialTabAImages = [
-  'https://images.pexels.com/photos/2425251/pexels-photo-2425251.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/5946969/pexels-photo-5946969.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-  'https://images.pexels.com/photos/2303781/pexels-photo-2303781.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/248444/pexels-photo-248444.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/1571746/pexels-photo-1571746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-];
-
-final List<String> initialTabBImages = [
-  'https://images.pexels.com/photos/2187661/pexels-photo-2187661.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/707680/pexels-photo-707680.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/634009/pexels-photo-634009.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/2091013/pexels-photo-2091013.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  'https://images.pexels.com/photos/928971/pexels-photo-928971.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-];
+import 'builtamart_dbhelper.dart';
 
 class GalleryProvider with ChangeNotifier {
-  final List<String> _carouselImages = initialCarouselImages;
-  final List<String> _tabAImages = initialTabAImages;
-  final List<String> _tabBImages = initialTabBImages;
+  late final BuiltaMartDBHelper _helper;
+  String _user = '';
+  final List<String?> _carouselImages = BuiltaMartImages().initialCarouselImages;
+  final List<String?> _tabAImages = BuiltaMartImages().initialTabAImages;
+  final List<String?> _tabBImages = BuiltaMartImages().initialTabBImages;
 
-  List<String> get carouselImages => _carouselImages;
-  List<String> get tabAImages => _tabAImages;
-  List<String> get tabBImages => _tabBImages;
+  List<String?> get carouselImages => _carouselImages;
+  List<String?> get tabAImages => _tabAImages;
+  List<String?> get tabBImages => _tabBImages;
+  BuiltaMartDBHelper get helper => _helper;
+  String get user => _user;
+
+  void setDBHelper(BuiltaMartDBHelper helper) {
+    _helper = helper;
+  }
+
+  void setUser(String user) {
+    _user = user;
+    notifyListeners();
+  }
+
+  Future<void> initializeImageListNewUser() async {
+    for (var image in BuiltaMartImages().initialTabAImages) {
+      await _helper.insert(BuiltaMartDBHelper.TABLE_USER_STATE, {
+        'user': _user,
+        'tab': 'A',
+        'image': image,
+        'carousel': isImageInCarousel(image) ? 1 : 0
+      });
+    }
+
+    for (var image in BuiltaMartImages().initialTabBImages) {
+      await _helper.insert(BuiltaMartDBHelper.TABLE_USER_STATE, {
+        'user': _user,
+        'tab': 'B',
+        'image': image,
+        'carousel': isImageInCarousel(image) ? 1 : 0
+      });
+    }
+    await loadSavedState();
+  }
+
+  Future<void> loadSavedState() async {
+    await syncTabAImages();
+    await syncTabBImages();
+    await syncCarouselImages();
+  }
+
+  Future<void> syncCarouselImages() async {
+    _helper.getCarouselImages(_user).then((value) {
+      List<UserState> temp = value.map((e) => UserState.fromMap(e)).toList();
+      _carouselImages.clear();
+      _carouselImages.addAll(temp.map((e) => e.image!).toList());
+      notifyListeners();
+    });
+  }
+
+  Future<void> syncTabAImages() async {
+    _helper.getTabImages(_user, 'A').then((value) {
+      List<UserState> temp = value.map((e) => UserState.fromMap(e)).toList();
+      _tabAImages.clear();
+      _tabAImages.addAll(temp.map((e) => e.image!).toList());
+      notifyListeners();
+    });
+  }
+
+  Future<void> syncTabBImages() async {
+    _helper.getTabImages(_user, 'B').then((value) {
+      List<UserState> temp = value.map((e) => UserState.fromMap(e)).toList();
+      _tabBImages.clear();
+      _tabBImages.addAll(temp.map((e) => e.image!).toList());
+      notifyListeners();
+    });
+  }
 
   void addToCarousel(String image) {
-    _carouselImages.add(image);
-    notifyListeners();
+    _helper.updateItem(
+        UserState(_user, isInTabA(image) ? 'A' : 'B', image, 1).toMap(),
+        [_user, image]
+    );
+    syncCarouselImages();
   }
 
   void addToTabA(String image) {
-    _tabAImages.add(image);
-    notifyListeners();
+    _helper.updateItem(
+      UserState(_user, 'A', image, isImageInCarousel(image) ? 1 : 0).toMap(),
+      [_user, image]
+    );
+    syncTabAImages();
+    syncTabBImages();
   }
 
   void addToTabB(String image) {
-    _tabBImages.add(image);
-    notifyListeners();
+    _helper.updateItem(
+        UserState(_user, 'B', image, isImageInCarousel(image) ? 1 : 0).toMap(),
+        [_user, image]
+    );
+    syncTabAImages();
+    syncTabBImages();
   }
 
   void removeFromCarousel(String image) {
-    _carouselImages.remove(image);
-    notifyListeners();
-  }
-
-  void removeFromTabA(String image) {
-    _tabAImages.remove(image);
-    notifyListeners();
-  }
-
-  void removeFromTabB(String image) {
-    _tabBImages.remove(image);
-    notifyListeners();
+    _helper.updateItem(
+        UserState(_user, isInTabA(image) ? 'A' : 'B', image, 0).toMap(),
+        [_user, image]
+    );
+    syncCarouselImages();
   }
 
   bool isImageInCarousel(String image) {

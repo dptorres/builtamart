@@ -1,9 +1,13 @@
 
+import 'package:builtamart_flutter_exam/constants/constants_colors.dart';
+import 'package:builtamart_flutter_exam/constants/constants_routes.dart';
 import 'package:builtamart_flutter_exam/provider/gallery_provider.dart';
 import 'package:builtamart_flutter_exam/ui/pages/tab_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../widgets/buttons/builtamart_button.dart';
 
 class GalleryPage extends StatefulWidget {
   const GalleryPage({Key? key}) : super(key: key);
@@ -16,9 +20,9 @@ class GalleryPageState extends State<GalleryPage> {
 
   @override
   Widget build(BuildContext context) {
-    var carouselImages = context.watch<GalleryProvider>().carouselImages;
-    var tabAImages = context.watch<GalleryProvider>().tabAImages;
-    var tabBImages = context.watch<GalleryProvider>().tabBImages;
+    List<String?> carouselImages = context.watch<GalleryProvider>().carouselImages;
+    List<String?> tabAImages = context.watch<GalleryProvider>().tabAImages;
+    List<String?> tabBImages = context.watch<GalleryProvider>().tabBImages;
 
     return DefaultTabController(
       length: 2,
@@ -44,7 +48,7 @@ class GalleryPageState extends State<GalleryPage> {
                       image: DecorationImage(
                           fit: BoxFit.cover,
                           image: NetworkImage(
-                            carouselImages[itemIndex]
+                            carouselImages[itemIndex]!
                           )
                         )
                     ),
@@ -73,6 +77,20 @@ class GalleryPageState extends State<GalleryPage> {
                     ),
                   ],
                 )
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: BuiltaMartButton(
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, loginRoute, (Route<dynamic> route) => false);
+                  },
+                  label: 'Logout',
+                  fontColor: Colors.white,
+                  btnFontSize: 16.0,
+                  backgroundColor: BuiltaMartColors.red,
+                  borderColor: BuiltaMartColors.red,
+                ),
               ),
             ],
           ),

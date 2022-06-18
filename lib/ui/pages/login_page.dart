@@ -1,7 +1,9 @@
 
 import 'package:builtamart_flutter_exam/constants/constants_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/gallery_provider.dart';
 import '../widgets/buttons/builtamart_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -31,11 +33,22 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  void handleLoginPress() {
-    if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
+  Future<void> handleLoginPress() async {
+    String username = _usernameController.text;
+    if (username.isEmpty || _passwordController.text.isEmpty) {
       showErrorDialog();
     } else {
-      Navigator.pushNamed(context, galleryRoute);
+      var helper = Provider.of<GalleryProvider>(context, listen: false).helper;
+      helper.getUser(username).then((value) async {
+        Provider.of<GalleryProvider>(context, listen: false).setUser(username);
+        if (value.isNotEmpty) {
+          await Provider.of<GalleryProvider>(context, listen: false).loadSavedState();
+          Navigator.pushNamed(context, galleryRoute);
+        } else {
+          await Provider.of<GalleryProvider>(context, listen: false).initializeImageListNewUser();
+          Navigator.pushNamed(context, galleryRoute);
+        }
+      });
     }
   }
 
